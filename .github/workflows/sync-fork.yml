@@ -1,0 +1,21 @@
+name: Sync Fork (Official gh repo sync)
+on:
+  schedule:
+    - cron: '0 0 * * *' # UTC 0点 = 北京时间 08:00
+  workflow_dispatch: # 支持页面手动触发
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install GitHub CLI
+        run: sudo apt-get update && sudo apt-get install gh -y
+
+      - name: Authenticate with GitHub
+        env:
+          GH_TOKEN: ${{ secrets.PAT }}
+        run: gh auth login --with-token <<< "$GH_TOKEN"
+
+      - name: Run official gh repo sync
+        run: |
+          gh repo sync zzh407/rea -b main
